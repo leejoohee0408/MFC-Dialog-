@@ -10,6 +10,8 @@
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
+// 콘솔	창을 띄우는 코드 Debug 모드에서만 활성화
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console"))
 #endif
 
 
@@ -52,6 +54,8 @@ END_MESSAGE_MAP()
 
 CMFCprojectDlg::CMFCprojectDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MFCPROJECT_DIALOG, pParent)
+	, m_nNum(10)
+	, m_nNum2(10)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -59,6 +63,8 @@ CMFCprojectDlg::CMFCprojectDlg(CWnd* pParent /*=nullptr*/)
 void CMFCprojectDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_NUM, m_nNum);
+	DDX_Text(pDX, IDC_EDIT_NUM2, m_nNum2);
 }
 
 BEGIN_MESSAGE_MAP(CMFCprojectDlg, CDialogEx)
@@ -101,6 +107,8 @@ BOOL CMFCprojectDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	 
+	SetDlgItemText(IDC_STATIC_RESULT, _T("0"));
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -154,9 +162,37 @@ HCURSOR CMFCprojectDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-
+//std::cout을 사용하기 위해 iostream 헤더 파일을 포함합니다.
+#include <iostream>
+// cout를 사용할때 std를 써야하는데 이걸 쓰면 cout앞에 std를 안써도 자동으로 입력이 되어있겠다라는 뜻입니다.
+using namespace std;
 void CMFCprojectDlg::OnBnClickedButTest()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	AfxMessageBox(_T("hello 미스터마이 yes 터 데이"));
+	UpdateData(true);
+	//자바할때랑 똑같이 for문을 사용하여 0부터 m_nNum까지의 합을 구하는 코드를 작성합니다.
+	int nSum = 0;
+	for (int i = 0; i < m_nNum; i++) {
+		//콘솔창에 i의 값을 출력합니다.
+		// std::cout << i << std::endl;
+		cout << i << endl;
+		nSum += i;
+	}
+	m_nNum = nSum;
+
+	int nSum2 = 0;
+	for (int j = 0; j < m_nNum2; j++) {
+		//콘솔창에 i의 값을 출력합니다.
+		// std::cout << i << std::endl;
+		cout << j << endl;
+		nSum2 += j;
+	}
+	m_nNum2 = nSum2;
+	
+	//도구상자에서 Static Text 컨트롤을 하나 추가하고 IDC_STATIC_RESULT라는 ID를 부여한 것을
+	//IDC_BUT_TEST라는 ID의 버튼을 누르면 IDC_STATIC_RESULT라는 ID인 것이 RRRRR로 바뀌도록 코드를 작성합니다.
+	//이걸 CMFCprojectDlg 메시지 처리기하는107줄에 넣고 사용하면 따로 뭘 할필요 없이 이용이 가능합니다.
+	//SetDlgItemText(IDC_STATIC_RESULT, _T("RRRRR"));
+
+	UpdateData(FALSE);
 }
